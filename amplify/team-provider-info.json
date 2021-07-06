@@ -1,0 +1,20 @@
+{
+  "dev": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-videogallery-dev-71146-authRole",
+      "UnauthRoleArn": "arn:aws:iam::968965028623:role/amplify-videogallery-dev-71146-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::968965028623:role/amplify-videogallery-dev-71146-authRole",
+      "Region": "ap-south-1",
+      "DeploymentBucketName": "amplify-videogallery-dev-71146-deployment",
+      "UnauthRoleName": "amplify-videogallery-dev-71146-unauthRole",
+      "StackName": "amplify-videogallery-dev-71146",
+      "StackId": "arn:aws:cloudformation:ap-south-1:968965028623:stack/amplify-videogallery-dev-71146/2be0d3f0-dd32-11eb-b103-0a1d2a8ec3a6",
+      "AmplifyAppId": "d2nvbn34afp83a"
+    },
+    "categories": {
+      "auth": {
+        "videogallery78df9d20": {}
+      }
+    }
+  }
+}

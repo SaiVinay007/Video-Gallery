@@ -1,0 +1,16 @@
+{
+  "auth": {
+    "videogallery78df9d20": {
+      "service": "Cognito",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [],
+      "customAuth": false
+    }
+  },
+  "storage": {
+    "VideoGalleryApp": {
+      "service": "S3",
+      "providerPlugin": "awscloudformation"
+    }
+  }
+}
