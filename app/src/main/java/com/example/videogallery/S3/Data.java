@@ -37,8 +37,9 @@ public class Data {
     private Executor executor;
     public static ArrayList<String> keys;
     public static ArrayList<String> urls;
-    private static ArrayList<Boolean> isDownloaded;
-    private static ArrayList<String> localFilePaths;
+    public static ArrayList<Boolean> isDownloaded;
+    public static ArrayList<String> localFilePaths;
+    public static ArrayList<String> downloadedPaths;
 
     public Map<String, Integer> keysPosition = new HashMap<String, Integer>();
 
@@ -50,11 +51,13 @@ public class Data {
     private Data() {
         executor = Executors.newFixedThreadPool(4);
     }
+
     public static void initialize(int len) {
         isDownloaded = new ArrayList<Boolean>(Arrays.asList(new Boolean[len]));
         Collections.fill(isDownloaded, Boolean.FALSE);
         localFilePaths = new ArrayList<String>(Arrays.asList(new String[len]));
         Collections.fill(localFilePaths, "");
+        downloadedPaths = new ArrayList<String>();
         Log.i("isDownloaded", "initialize: " + isDownloaded.size());
         Log.i("localFilePath", "initialize: " + localFilePaths.size());
     }
@@ -142,8 +145,9 @@ public class Data {
                 progress -> Log.i("MyAmplifyApp", "Fraction completed: " + progress.getFractionCompleted()),
                 result -> {
                     Log.i("MyAmplifyApp", "Successfully downloaded: " + result.getFile().getName());
-                    localFilePaths.set(position, result.getFile().getName());
+                    localFilePaths.set(position, String.valueOf(result.getFile()));
                     isDownloaded.set(position, true);
+                    downloadedPaths.add(String.valueOf(result.getFile()));
                 },
                 error -> Log.e("MyAmplifyApp",  "Download Failure", error)
         );

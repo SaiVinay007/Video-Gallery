@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
 import android.os.Bundle;
@@ -15,6 +16,8 @@ import android.preference.PreferenceManager;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.amplifyframework.core.Amplify;
@@ -26,6 +29,7 @@ import com.example.videogallery.Adapter.MainAdapter;
 import com.example.videogallery.S3.Data;
 import com.example.videogallery.S3.DataCallback;
 import com.example.videogallery.S3.DataPreferences;
+import com.google.android.material.bottomnavigation.BottomNavigationView;
 import com.google.android.play.core.tasks.Task;
 import com.google.gson.Gson;
 import com.google.gson.reflect.TypeToken;
@@ -34,6 +38,7 @@ import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.Serializable;
 import java.lang.reflect.Type;
 import java.util.AbstractSequentialList;
 import java.util.ArrayList;
@@ -87,7 +92,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.ItemC
             Log.i("Loading Cached :", "Data.urls & Keys");
         }
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        RecyclerView recyclerView = this.findViewById(R.id.recyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
         adapter = new MainAdapter(this, Data.urls);
         adapter.setClickListener(this);
@@ -96,6 +101,23 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.ItemC
         if(!cached) {
             loadKeys();
         }
+
+        ImageView imgDownloads = (ImageView) this.findViewById(R.id.downloadImg);
+        imgDownloads.setClickable(true);
+        imgDownloads.setOnClickListener((View view ) -> openDownloads());
+
+        TextView textDownloads = (TextView) this.findViewById(R.id.downloadText);
+        textDownloads.setClickable(true);
+        textDownloads.setOnClickListener((View view ) -> openDownloads());
+
+    }
+
+    private void openDownloads() {
+        Intent intent = new Intent(this, DownloadsActivity.class);
+        Bundle args = new Bundle();
+        args.putSerializable("ARRAYLIST",(Serializable) Data.downloadedPaths);
+        intent.putExtra("BUNDLE",args);
+        this.startActivity(intent);
     }
 
     private void loadKeys() {
@@ -169,6 +191,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.ItemC
                     downloadVideo(position);
                     dialog.dismiss();
                 })
+                .setNegativeButton("No", (dialog, which) -> dialog.dismiss())
                 .show();
     }
 
@@ -181,7 +204,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.ItemC
     private void check(int position) {
         if(isAlreadyDownloaded(position)){
             Toast t = Toast.makeText(getApplicationContext(),
-                    "You have already downloaded this video",
+                    "You already downloaded this video",
                     Toast.LENGTH_LONG);
             t.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
             t.show();
@@ -190,6 +213,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.ItemC
             downloadAlert(position);
         }
     }
+
 
     public static void verifyStoragePermissions(Activity activity) {
         // Check if we have write permission
