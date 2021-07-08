@@ -14,6 +14,7 @@ import androidx.core.app.ActivityCompat;
 import com.amplifyframework.core.Amplify;
 import com.amplifyframework.storage.StorageItem;
 import com.amplifyframework.storage.options.StorageDownloadFileOptions;
+import com.example.videogallery.MainActivity;
 
 import java.io.File;
 import java.io.IOException;
@@ -58,8 +59,6 @@ public class Data {
         localFilePaths = new ArrayList<String>(Arrays.asList(new String[len]));
         Collections.fill(localFilePaths, "");
         downloadedPaths = new ArrayList<String>();
-        Log.i("isDownloaded", "initialize: " + isDownloaded.size());
-        Log.i("localFilePath", "initialize: " + localFilePaths.size());
     }
 
     public void getKeys(DataCallback callback) {
@@ -110,10 +109,6 @@ public class Data {
                 try {
                     if(counter==0){
                         Log.i("In data class urls", String.valueOf(urls));
-                        isDownloaded = new ArrayList<Boolean>(Arrays.asList(new Boolean[urls.size()]));
-                        Collections.fill(isDownloaded, Boolean.FALSE);
-                        localFilePaths = new ArrayList<String>(Arrays.asList(new String[urls.size()]));
-                        Collections.fill(localFilePaths, "");
                         callback.onSuccess(urls);
                         break;
                     }
@@ -129,18 +124,30 @@ public class Data {
         Log.i("TAG", "downloadFile: "+keys.size());
         String key = keys.get(position);
         String[] parts = key.split("/");
-        String path = parts[parts.length-1];
+        String path = Environment.
+                getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS)
+                +"/"+ parts[parts.length-1];
 
         try {
             check_directory();
         } catch (IOException e) {
             e.printStackTrace();
         }
+        File file = new File(path);
+        if(file.exists()) {
+            Log.i("Exists", "downloadFile: " + path);
+        } else {
+            try {
+                file.createNewFile();
+                Log.i("Created", "downloadFile: " + path);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
 
         Amplify.Storage.downloadFile(
                 key,
-                new File(Environment.
-                        getExternalStoragePublicDirectory(Environment.DIRECTORY_DOWNLOADS) +"/"+ path),
+                new File(path),
                 StorageDownloadFileOptions.defaultInstance(),
                 progress -> Log.i("MyAmplifyApp", "Fraction completed: " + progress.getFractionCompleted()),
                 result -> {
@@ -148,6 +155,7 @@ public class Data {
                     localFilePaths.set(position, String.valueOf(result.getFile()));
                     isDownloaded.set(position, true);
                     downloadedPaths.add(String.valueOf(result.getFile()));
+                    MainActivity.downloadFinish(context);
                 },
                 error -> Log.e("MyAmplifyApp",  "Download Failure", error)
         );

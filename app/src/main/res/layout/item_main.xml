@@ -6,7 +6,7 @@
     android:orientation="vertical"
     android:padding="20dp"
     android:layout_width="match_parent"
-    android:layout_height="250dp"
+    android:layout_height="250sp"
 
     >
 <!--    android:layout_marginTop="30dp"-->
@@ -24,9 +24,9 @@
 <!--        tools:src="@color/black" />-->
     <ImageView
         android:id="@+id/image"
-        android:elevation="2dp"
-        android:layout_width="170dp"
-        android:layout_height="200dp"
+        android:elevation="2sp"
+        android:layout_width="170sp"
+        android:layout_height="200sp"
         android:layout_gravity="center_horizontal"
         android:background="@color/blue700" />
 <!--    android:textColor="@color/white" />-->

@@ -16,12 +16,15 @@ import com.example.videogallery.Adapter.DownloadsAdapter;
 import com.example.videogallery.Adapter.MainAdapter;
 import com.example.videogallery.S3.Data;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 
 public class DownloadsActivity extends AppCompatActivity implements DownloadsAdapter.ItemClickListener {
-    private DownloadsAdapter adapter;
 
+    private DownloadsAdapter adapter;
+    private ArrayList<String> videoPaths;
     public static final String PATHS="paths-array";
+
     @Override
     protected void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -29,7 +32,7 @@ public class DownloadsActivity extends AppCompatActivity implements DownloadsAda
 
         Intent intent = getIntent();
         Bundle args = intent.getBundleExtra("BUNDLE");
-        ArrayList<String> videoPaths = (ArrayList<String>) args.getSerializable("ARRAYLIST");
+        videoPaths = (ArrayList<String>) args.getSerializable("ARRAYLIST");
 
         RecyclerView recyclerView = this.findViewById(R.id.downloadsRecyclerView);
         recyclerView.setLayoutManager(new GridLayoutManager(this, 2));
@@ -45,7 +48,9 @@ public class DownloadsActivity extends AppCompatActivity implements DownloadsAda
     }
 
     private void playVideo(int position) {
-
+        Intent intent = new Intent(this, VideoActivity.class);
+        intent.putExtra(VideoActivity.VIDEO_PATH, videoPaths.get(position));
+        this.startActivity(intent);
     }
 
     private void playAlert(int position) {

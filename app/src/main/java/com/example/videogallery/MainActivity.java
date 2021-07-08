@@ -8,6 +8,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
@@ -86,8 +87,8 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.ItemC
             ArrayList<String> list2 = preferences.getSavedPreferences(preferences.KEY_SAVE_Keys);
             Data.keys.clear();
             Data.keys.addAll(list2);
-
             Data.initialize(Data.urls.size());
+
             Log.i("TAG", "onCreate: " + Data.urls.size());
             Log.i("Loading Cached :", "Data.urls & Keys");
         }
@@ -155,6 +156,7 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.ItemC
 
                     // We notify adapter to use Data.urls to get thumbnails
                     Log.i("loadUrls()", String.valueOf(Data.urls));
+                    Data.initialize(Data.urls.size());
                     adapter.notifyDataSetChanged();
                     preferences.savePreferences(Data.urls, preferences.KEY_SAVE_URLS);
                 });
@@ -180,6 +182,14 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.ItemC
         Data.downloadFile(this, position);
     }
 
+    public static void downloadFinish(Context context) {
+        Toast t = Toast.makeText(context,
+                "Video downloaded!",
+                Toast.LENGTH_LONG);
+        t.setGravity(Gravity.BOTTOM | Gravity.CENTER, 0, 0);
+        t.show();
+    }
+
     private boolean isAlreadyDownloaded(int position) {
         return Data.isVideoDownloaded(position);
     }
@@ -197,9 +207,9 @@ public class MainActivity extends AppCompatActivity implements MainAdapter.ItemC
 
     @Override
     public void onItemClick(View view, int position) {
-//         Log.i("TAG", "You clicked number " + adapter.getItem(position) + ", which is at cell position " + position);
         check(position);
     }
+
 
     private void check(int position) {
         if(isAlreadyDownloaded(position)){
